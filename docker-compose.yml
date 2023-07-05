@@ -1,0 +1,32 @@
+version: '3.4'
+services:
+  proxy:
+    image: envoyproxy/envoy:v1.16.0
+    container_name: webclient_envoy
+    ports:
+      - '8000:8000'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+      - ${ENVOY_CONFIG}:/etc/envoy/envoy.yaml # absolute path to yaml file in ENVOY_CONFIG
+    networks:
+      - haaukins-webclient
+    env_file:
+      - .env
+    restart: always
+
+  webclient:
+    image: aaunetworksecurity/haaukins-webclient:v1.6.2
+    container_name: webclient_frondend
+    ports:
+      - '8003:8003'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+    networks:
+      - haaukins-webclient
+    env_file:
+      - .env
+    restart: always
+
+networks:
+  haaukins-webclient:
+
